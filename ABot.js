@@ -25,6 +25,7 @@ bot.addListener("join", function(channel, who) {
 });
 
 bot.addListener("message", function(nick, to, text, message) {
+	checkNotes(to, nick);
 	parseMessage(nick, to, text, message);
 });
 
@@ -45,6 +46,8 @@ function parseMessage(nick, to, text, message) {
 		} else if(op === "?"){
 			if(cmd === "owner"){
 				tellOwner(to);
+			} else if(cmd === "note"){
+				checkNotes(to, nick);
 			}
 		}
 	}
