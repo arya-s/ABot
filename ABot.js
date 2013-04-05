@@ -46,8 +46,6 @@ function parseMessage(nick, to, text, message) {
 		} else if(op === "?"){
 			if(cmd === "owner"){
 				tellOwner(to);
-			} else if(cmd === "note"){
-				checkNotes(to, nick);
 			}
 		}
 	}
