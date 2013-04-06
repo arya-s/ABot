@@ -3,7 +3,8 @@ var debug = false,
 	config = require("./config.json"),
 	channesl = [],
 	messages = {},
-	knownUsers = require("./users.json");
+	knownUsers = require("./users.json"),
+	usedNoteCounter = 0;
 
 if (debug) {
 	channels = getChannels(config.channels.debug);
@@ -43,10 +44,13 @@ function parseMessage(nick, to, text, message) {
 		if(op === "!"){
 			if(cmd === "note"){
 				sendNote(nick, msg);
+				usedNoteCounter++;
 			}
 		} else if(op === "?"){
 			if(cmd === "owner"){
 				tellOwner(nick, to);
+			} else if(cmd == "stats" && nick == "Arya"){
+				bot.say(to, "!note used: "+usedNoteCounter);
 			}
 		}
 	}
