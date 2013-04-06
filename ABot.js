@@ -25,6 +25,7 @@ bot.addListener("join", function(channel, who) {
 });
 
 bot.addListener("message", function(nick, to, text, message) {
+	console.log("["+to+"] "+nick+": "+text);
 	checkNotes(to, nick);
 	parseMessage(nick, to, text, message);
 });
