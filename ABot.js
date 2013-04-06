@@ -45,7 +45,7 @@ function parseMessage(nick, to, text, message) {
 			}
 		} else if(op === "?"){
 			if(cmd === "owner"){
-				tellOwner(to);
+				tellOwner(nick, to);
 			}
 		}
 	}
@@ -59,8 +59,12 @@ function checkNotes(channel, who) {
 	}
 }
 
-function tellOwner(to){
-	bot.say(to, "My owner is Arya but soon I'll be his owner.");
+function tellOwner(nick, to){
+	if(nick === "Arya"){
+		bot.say(to, "My owner is Arya.");
+	} else {
+		bot.say(to, "I have no owner. Bow before me lowly human.");
+	}
 }
 
 function getUser(alias){
