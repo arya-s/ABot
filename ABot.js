@@ -12,6 +12,14 @@ if (debug) {
 	channels = getChannels(config.channels.normal);
 }
 
+var response = [
+	"Okay, okay. I got your note, relax.",
+	"I'll deliver your note. If I feel like it.",
+	"Note accepted.",
+	"Yea yea, shut up already.",
+	"Do you really think that note is so important?"
+];
+
 var bot = new irc.Client(
 config.server,
 config.botname[0], {
@@ -21,16 +29,11 @@ config.botname[0], {
 	floodProtectionDelay: 1000
 });
 
-bot.addListener("join", function(channel, who) {
-	checkNotes(channel, who);
-});
-
 bot.addListener("message", function(nick, to, text, message) {
 	console.log("["+to+"] "+nick+": "+text);
 	checkNotes(to, nick);
 	parseMessage(nick, to, text, message);
 });
-
 
 //----Functions
 function parseMessage(nick, to, text, message) {
@@ -44,6 +47,7 @@ function parseMessage(nick, to, text, message) {
 		if(op === "!"){
 			if(cmd === "note"){
 				sendNote(nick, msg);
+				bot.say(to, response[random(0, response.length)]);
 				usedNoteCounter++;
 			}
 		} else if(op === "?"){
@@ -172,4 +176,8 @@ function timestamp(now) {
 	(hours === 0 ? '' : (hours === 1 ? hours + " hour " : hours + " hours ")) +
 	(minutes === 0 ? '' : (minutes === 1 ? minutes + " minute " : minutes + " minutes ")) +
 	(seconds === 1 ? seconds + " second" : seconds + " seconds");
+}
+
+function random(from, to) {
+	Math.floor((Math.random()*to)+from);
 }
