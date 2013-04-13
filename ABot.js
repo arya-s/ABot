@@ -1,4 +1,4 @@
-var debug = true,
+var debug = false,
 	irc = require("irc"),
 	config = require("./config.json"),
 	channesl = [],
@@ -22,7 +22,7 @@ var response = [
 
 var bot = new irc.Client(
 config.server,
-config.botname[1], {
+config.botname[0], {
 	channels: channels,
 	debug: true,
 	floodProtection: true,
