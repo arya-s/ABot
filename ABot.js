@@ -1,4 +1,4 @@
-var debug = false,
+var debug = true,
 	irc = require("irc"),
 	config = require("./config.json"),
 	channesl = [],
@@ -17,12 +17,12 @@ var response = [
 	"I'll deliver your note. If I feel like it.",
 	"Note accepted.",
 	"Yea yea, shut up already.",
-	"Do you really think that note is so important?"
+	"Do you really think your note is so important?"
 ];
 
 var bot = new irc.Client(
 config.server,
-config.botname[0], {
+config.botname[1], {
 	channels: channels,
 	debug: true,
 	floodProtection: true,
@@ -47,7 +47,7 @@ function parseMessage(nick, to, text, message) {
 		if(op === "!"){
 			if(cmd === "note"){
 				sendNote(nick, msg);
-				bot.say(to, response[random(0, response.length)]);
+				bot.say(to, response[rnd(0, response.length)]);
 				usedNoteCounter++;
 			}
 		} else if(op === "?"){
@@ -178,6 +178,6 @@ function timestamp(now) {
 	(seconds === 1 ? seconds + " second" : seconds + " seconds");
 }
 
-function random(from, to) {
-	Math.floor((Math.random()*to)+from);
+function rnd(from, to) {
+	return Math.floor((Math.random()*to)+from);
 }
