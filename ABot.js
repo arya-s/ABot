@@ -77,6 +77,15 @@ function saveNotes(to){
 	bot.say(to, "Saved all notes... Please don't shut me down.");
 }
 
+function saveUsers(){
+	var stream = fs.createWriteStream("./users.json");
+	stream.once('open', function(fd) {
+		var json = JSON.stringify(knownUsers);
+		stream.write(json);
+		stream.end();
+	});
+}
+
 function tellBaseUsers(to){
 	var usrs = "";
 	var cnt = 1;
@@ -96,6 +105,7 @@ function addAlias(to, msg){
 			knownUsers[usr] = [];
 		}
 		knownUsers[usr].push(alias.toLowerCase());
+		saveUsers();
 		bot.say(to, "Added "+alias+" alias to "+usr+".");
 	} else {
 		bot.say(to, "Invalid use of !alias. Use: 1) Query your base username using '?user'. 2) Add your alias: !alias <base username> <new alias>.");
