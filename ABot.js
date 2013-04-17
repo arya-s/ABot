@@ -99,8 +99,8 @@ function tellBaseUsers(to){
 function addAlias(to, msg){
 	var split = msg.split(' ');
 	if(split.length == 2){
-		var usr = split[0];
-		var alias = split[1];
+		var usr = split[0].toLowerCase();
+		var alias = split[1].toLowerCase();
 		if(knownUsers[usr] === undefined){
 			knownUsers[usr] = [];
 		}
