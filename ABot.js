@@ -1,10 +1,11 @@
-var debug = false,
+var debug = true,
 	irc = require("irc"),
 	config = require("./config.json"),
 	channesl = [],
-	messages = {},
+	messages = require("./messages.json"),
 	knownUsers = require("./users.json"),
-	usedNoteCounter = 0;
+	usedNoteCounter = 0,
+	fs = require('fs');
 
 if (debug) {
 	channels = getChannels(config.channels.debug);
@@ -22,7 +23,7 @@ var response = [
 
 var bot = new irc.Client(
 config.server,
-config.botname[0], {
+config.botname[1], {
 	channels: channels,
 	debug: true,
 	floodProtection: true,
@@ -49,14 +50,55 @@ function parseMessage(nick, to, text, message) {
 				sendNote(nick, msg);
 				bot.say(to, response[rnd(0, response.length)]);
 				usedNoteCounter++;
+			} else if(cmd === "alias"){
+				addAlias(to, msg);
+			} else if(cmd === "save" && nick == "Arya"){
+				saveNotes(to);
 			}
 		} else if(op === "?"){
 			if(cmd === "owner"){
 				tellOwner(nick, to);
-			} else if(cmd == "stats" && nick == "Arya"){
+			} else if(cmd === "stats" && nick == "Arya"){
 				bot.say(to, "!note used: "+usedNoteCounter);
+			} else if(cmd === "user"){
+				tellBaseUsers(to);
 			}
 		}
+	}
+}
+
+function saveNotes(to){
+	var stream = fs.createWriteStream("./messages.json");
+	stream.once('open', function(fd) {
+		var json = JSON.stringify(messages);
+		stream.write(json);
+		stream.end();
+	});
+	bot.say(to, "Saved all notes... Please don't shut me down.");
+}
+
+function tellBaseUsers(to){
+	var usrs = "";
+	var cnt = 1;
+	for(var u in knownUsers){
+		usrs += cnt + ". " + u+ " ";
+		cnt++;
+	}
+	bot.say(to, "Base users: "+usrs);
+}
+
+function addAlias(to, msg){
+	var split = msg.split(' ');
+	if(split.length == 2){
+		var usr = split[0];
+		var alias = split[1];
+		if(knownUsers[usr] === undefined){
+			knownUsers[usr] = [];
+		}
+		knownUsers[usr].push(alias.toLowerCase());
+		bot.say(to, "Added "+alias+" alias to "+usr+".");
+	} else {
+		bot.say(to, "Invalid use of !alias. Use: 1) Query your base username using '?user'. 2) Add your alias: !alias <base username> <new alias>.");
 	}
 }
 
